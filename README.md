@@ -206,8 +206,8 @@ For halfwords:
 | `and.ih %Z, %X, imm` | c      | 0    | Bitwise AND / Logical AND                           |
 | `or.ih  %Z, %X, imm` | c      | 1    | Bitwise OR / Logical OR                             |
 | `xor.ih %Z, %X, imm` | c      | 2    | Bitwise XOR                                         |
-| `inv.h  %Z, %X`      | 8      | 2    | Pseudo-instruction: bitwise NOT (`xorb %Z, %X, -1`) |
-| `not.h  %Z, %X`      | 8      | 2    | Pseudo-instruction: logical NOT (`xorb %Z, %X, 1`)  |
+| `inv.h  %Z, %X`      | c      | 2    | Pseudo-instruction: bitwise NOT (`xorb %Z, %X, -1`) |
+| `not.h  %Z, %X`      | c      | 2    | Pseudo-instruction: logical NOT (`xorb %Z, %X, 1`)  |
 | `sra.ih %Z, %X, imm` | c      | 3    | Shift right (arithmetic)                            |
 | `srl.ih %Z, %X, imm` | c      | 4    | Shift right (logic)                                 |
 | `sll.ih %Z, %X, imm` | c      | 5    | Shift left (logic)                                  |
