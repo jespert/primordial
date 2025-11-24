@@ -198,7 +198,6 @@ For bytes:
 | `srlib %Z, %X, imm` | 8      | 4    | Read half at %Y and write to (%X+offset)            |
 | `sllib %Z, %X, imm` | 8      | 5    | Read half at %Y and write to (%X+offset)            |
 | `addib %Z, %X, imm` | 8      | 6    | Read half at %Y and write to (%X+offset)            |
-| `subib %Z, %X, imm` | 8      | 7    | Read half at %Y and write to (%X+offset)            |
 
 For halfwords:
 
@@ -213,7 +212,6 @@ For halfwords:
 | `srlih %Z, %X, imm` | c      | 4    | Shift right (logic)                                 |
 | `sllih %Z, %X, imm` | c      | 5    | Shift left (logic)                                  |
 | `addih %Z, %X, imm` | c      | 6    | Addition                                            |
-| `subih %Z, %X, imm` | c      | 7    | Subtraction                                         |
 
 Additionally, the below instructions work on full registers but are suitable
 for any operand size.
