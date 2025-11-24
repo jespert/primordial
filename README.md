@@ -229,29 +229,29 @@ we assume that Booleans are stored as 0 or 1 exactly.
 
 For bytes:
 
-| Instruction        | Opcode | Func | Semantics                                             |
-|--------------------|--------|------|-------------------------------------------------------|
-| `and.b %Z, %Y, %X` | b      | 0    | Bitwise AND / Logical AND                             |
-| `or.b  %Z, %Y, %X` | b      | 1    | Bitwise OR / Logical OR                               |
-| `xor.b %Z, %Y, %X` | b      | 2    | Bitwise XOR                                           |
-| `sra.b %Z, %Y, %X` | b      | 3    | Shift right (arithmetic)                              |
-| `srl.b %Z, %Y, %X` | b      | 4    | Shift right (logical)                                 |
-| `sll.b %Z, %Y, %X` | b      | 5    | Shift left (logical)                                  |
-| `add.b %Z, %Y, %X` | b      | 6    | Addition                                              |
-| `sub.b %Z, %Y, %X` | b      | 7    | Subtraction                                           |
+| Instruction        | Opcode | Func | Semantics                 |
+|--------------------|--------|------|---------------------------|
+| `and.b %Z, %Y, %X` | b      | 0    | Bitwise AND / Logical AND |
+| `or.b  %Z, %Y, %X` | b      | 1    | Bitwise OR / Logical OR   |
+| `xor.b %Z, %Y, %X` | b      | 2    | Bitwise XOR               |
+| `sra.b %Z, %Y, %X` | b      | 3    | Shift right (arithmetic)  |
+| `srl.b %Z, %Y, %X` | b      | 4    | Shift right (logical)     |
+| `sll.b %Z, %Y, %X` | b      | 5    | Shift left (logical)      |
+| `add.b %Z, %Y, %X` | b      | 6    | Addition                  |
+| `sub.b %Z, %Y, %X` | b      | 7    | Subtraction               |
 
 For halfwords:
 
-| Instruction        | Opcode | Func | Semantics                                             |
-|--------------------|--------|------|-------------------------------------------------------|
-| `and.h %Z, %Y, %X` | f      | 0    | Bitwise AND / Logical AND                             |
-| `or.h  %Z, %Y, %X` | f      | 1    | Bitwise OR / Logical OR                               |
-| `xor.h %Z, %Y, %X` | f      | 2    | Bitwise XOR                                           |
-| `sra.h %Z, %Y, %X` | f      | 3    | Shift right (arithmetic)                              |
-| `srl.h %Z, %Y, %X` | f      | 4    | Shift right (logical)                                 |
-| `sll.h %Z, %Y, %X` | f      | 5    | Shift left (logical)                                  |
-| `add.h %Z, %Y, %X` | f      | 6    | Addition                                              |
-| `sub.h %Z, %Y, %X` | f      | 7    | Subtraction                                           |
+| Instruction        | Opcode | Func | Semantics                 |
+|--------------------|--------|------|---------------------------|
+| `and.h %Z, %Y, %X` | f      | 0    | Bitwise AND / Logical AND |
+| `or.h  %Z, %Y, %X` | f      | 1    | Bitwise OR / Logical OR   |
+| `xor.h %Z, %Y, %X` | f      | 2    | Bitwise XOR               |
+| `sra.h %Z, %Y, %X` | f      | 3    | Shift right (arithmetic)  |
+| `srl.h %Z, %Y, %X` | f      | 4    | Shift right (logical)     |
+| `sll.h %Z, %Y, %X` | f      | 5    | Shift left (logical)      |
+| `add.h %Z, %Y, %X` | f      | 6    | Addition                  |
+| `sub.h %Z, %Y, %X` | f      | 7    | Subtraction               |
 
 Additionally, the below instructions work on full registers but are suitable
 for any operand size.
