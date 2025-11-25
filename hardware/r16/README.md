@@ -2,8 +2,8 @@
 
 Specification and emulator for an extremely simple 16-bit computer.
 
-You can think of it as a very late RISC competitor to the PDP-11 in which
-C and UNIX were born.
+You can think of it as a very late RISC competitor to the PDP-7 and PDP-11
+in which C and UNIX were born.
 
 ## Features
 
