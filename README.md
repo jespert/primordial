@@ -90,30 +90,31 @@ those fields must be set to zero.
 
 ### Opcodes
 
-| Hexadecimal | Binary | Format | Usage                                          |
-|-------------|--------|--------|------------------------------------------------|
-| 0           | 0000   | A      | Unconditional control flow: call, jump, return |
-| 2           | 0010   | B      | Conditional control flow: branch               |
-| 4           | 0100   | A      | Load from memory                               |
-| 6           | 0110   | B      | Store to memory                                |
-| 8           | 1000   | A      | Byte arithmetic with immediates                |
-| b           | 1011   | R      | Byte arithmetic on registers only              |
-| c           | 1100   | A      | Halfword arithmetic with immediates            |
-| d           | 1101   | A      | Generic arithmetic with immediates             |
-| f           | 1111   | R      | Halfword arithmetic on registers only          |
+Opcodes not listed are reserved for future use or custom extensions.
 
-To simplify the most basic hardware implementations, the two LSBs of the opcode
-determine the format:
+| Hexadecimal | Binary | Format | Usage                                               |
+|-------------|--------|--------|-----------------------------------------------------|
+| 0           | 0000   | R      | Operations on registers only and special operations |
+| 4           | 0100   | B      | Conditional control flow: branch                    |
+| 5           | 0101   | B      | Store to memory                                     |
+| 8           | 1000   | A      | Unconditional control flow: call, jump, return      |
+| 9           | 1001   | A      | Load from memory                                    |
+| b           | 1011   | A      | Generic arithmetic with immediates                  |
+| e           | 1110   | A      | Byte arithmetic with immediates                     |
+| f           | 1111   | A      | Halfword arithmetic with immediates                 |
 
-- 00: A format
-- 01: A format
-- 10: B format
-- 11: R format
+To simplify the most basic hardware implementations, the two MSBs of the opcode
+determine the format in the base architecture:
 
-While the two MSBs determine the type:
+- 00: R format
+- 01: B format
+- 10: A format
+- 11: A format
+
+For the A and B formats, the two LSBs also determine the type:
 
 - 00: Control flow
-- 01: Load/store
+- 01: Memory operations
 - 10: ALU on bytes
 - 11: ALU on halfwords
 
@@ -131,15 +132,14 @@ pseudo-instructions are used for this purpose.
 
 | Instruction          | Opcode | Func | Semantics                                            |
 |----------------------|--------|------|------------------------------------------------------|
-| Illegal instruction  | 0      | 0    | Traps the execution of zero-initialised memory       |
-| `jal %Z, %X, offset` | 0      | 1    | Universal unconditional flow control                 |
-| `call target`        | 0      | 1    | Pseudo-instruction: jal %rp, %zr, target             |
-| `mcall target`       | 0      | 1    | Pseudo-instruction: jal %t0, %zr, target (millicode) |
-| `rcall %X, offset`   | 0      | 1    | Pseudo-instruction: jal %rp, %X, offset              |
-| `jump target`        | 0      | 1    | Pseudo-instruction: jal %zr, %zr, target             |
-| `rjump %X, offset`   | 0      | 1    | Pseudo-instruction: jal %zr, %X, offset              |
-| `ret`                | 0      | 1    | Pseudo-instruction: jal %zr, %rp, 0                  |
-| `mret`               | 0      | 1    | Pseudo-instruction: jal %zr, %t0, 0 (millicode)      |
+| `jal %Z, %X, offset` | 8      | 1    | Universal unconditional flow control                 |
+| `call target`        | 8      | 1    | Pseudo-instruction: jal %rp, %zr, target             |
+| `mcall target`       | 8      | 1    | Pseudo-instruction: jal %t0, %zr, target (millicode) |
+| `rcall %X, offset`   | 8      | 1    | Pseudo-instruction: jal %rp, %X, offset              |
+| `jump target`        | 8      | 1    | Pseudo-instruction: jal %zr, %zr, target             |
+| `rjump %X, offset`   | 8      | 1    | Pseudo-instruction: jal %zr, %X, offset              |
+| `ret`                | 8      | 1    | Pseudo-instruction: jal %zr, %rp, 0                  |
+| `mret`               | 8      | 1    | Pseudo-instruction: jal %zr, %t0, 0 (millicode)      |
 
 ### Conditional control flow
 
@@ -149,12 +149,12 @@ signedness suffixes (s, u) to mitigate accidental misuse.
 
 | Instruction            | Opcode | Func     | Semantics                              |
 |------------------------|--------|----------|----------------------------------------|
-| `beq %Y, %X, target`   | 2      | 0 (0000) | Branch to target if %X = %Y            |
-| `bne %Y, %X, target`   | 2      | 1 (0001) | Branch to target if %X ≠ %Y            |
-| `blt.s %Y, %X, target` | 2      | 8 (1000) | Branch to target if %X < %Y (signed)   |
-| `bge.s %Y, %X, target` | 2      | a (1010) | Branch to target if %X ≥ %Y (signed)   |
-| `blt.u %Y, %X, target` | 2      | c (1100) | Branch to target if %X < %Y (unsigned) |
-| `bge.u %Y, %X, target` | 2      | e (1110) | Branch to target if %X ≥ %Y (unsigned) |
+| `beq %Y, %X, target`   | 4      | 0 (0000) | Branch to target if %X = %Y            |
+| `bne %Y, %X, target`   | 4      | 1 (0001) | Branch to target if %X ≠ %Y            |
+| `blt.s %Y, %X, target` | 4      | 8 (1000) | Branch to target if %X < %Y (signed)   |
+| `bge.s %Y, %X, target` | 4      | a (1010) | Branch to target if %X ≥ %Y (signed)   |
+| `blt.u %Y, %X, target` | 4      | c (1100) | Branch to target if %X < %Y (unsigned) |
+| `bge.u %Y, %X, target` | 4      | e (1110) | Branch to target if %X ≥ %Y (unsigned) |
 
 ### Load from memory
 
@@ -165,9 +165,9 @@ This is unnecessary for halfwords because they match the register size.
 
 | Instruction              | Opcode | Func     | Semantics                                              |
 |--------------------------|--------|----------|--------------------------------------------------------|
-| `load.bs %Z, %X, offset` | 4      | 0 (0000) | Read byte at (%X+offset), sign extend, and write to %Z |
-| `load.h %Z, %X, offset`  | 4      | 1 (0001) | Read half at (%X+offset) and write to %Z               |
-| `load.bu %Z, %X, offset` | 4      | 4 (0100) | Read byte at (%X+offset), zero extend, and write to %Z |
+| `load.bs %Z, %X, offset` | 9      | 0 (0000) | Read byte at (%X+offset), sign extend, and write to %Z |
+| `load.h %Z, %X, offset`  | 9      | 1 (0001) | Read half at (%X+offset) and write to %Z               |
+| `load.bu %Z, %X, offset` | 9      | 4 (0100) | Read byte at (%X+offset), zero extend, and write to %Z |
 
 ### Store to memory
 
@@ -176,8 +176,8 @@ operand size suffices.
 
 | Instruction              | Opcode | Func     | Semantics                                |
 |--------------------------|--------|----------|------------------------------------------|
-| `store.b %Y, %X, offset` | 6      | 0 (0000) | Read byte at %Y and write to (%X+offset) |
-| `store.h %Y, %X, offset` | 6      | 1 (0001) | Read half at %Y and write to (%X+offset) |
+| `store.b %Y, %X, offset` | 5      | 0 (0000) | Read byte at %Y and write to (%X+offset) |
+| `store.h %Y, %X, offset` | 5      | 1 (0001) | Read half at %Y and write to (%X+offset) |
 
 ### Arithmetic with immediates
 
@@ -189,39 +189,45 @@ For bytes:
 
 | Instruction          | Opcode | Func | Semantics                                            |
 |----------------------|--------|------|------------------------------------------------------|
-| `and.ib %Z, %X, imm` | 8      | 0    | Bitwise AND / Logical AND                            |
-| `or.ib  %Z, %X, imm` | 8      | 1    | Bitwise OR / Logical OR                              |
-| `xor.ib %Z, %X, imm` | 8      | 2    | Bitwise XOR                                          |
-| `inv.b  %Z, %X`      | 8      | 2    | Pseudo-instruction: bitwise NOT (`xor.b %Z, %X, -1`) |
-| `not.b  %Z, %X`      | 8      | 2    | Pseudo-instruction: logical NOT (`xor.b %Z, %X, 1`)  |
-| `sra.ib %Z, %X, imm` | 8      | 3    | Read half at %Y and write to (%X+offset)             |
-| `srl.ib %Z, %X, imm` | 8      | 4    | Read half at %Y and write to (%X+offset)             |
-| `sll.ib %Z, %X, imm` | 8      | 5    | Read half at %Y and write to (%X+offset)             |
-| `add.ib %Z, %X, imm` | 8      | 6    | Read half at %Y and write to (%X+offset)             |
+| `and.ib %Z, %X, imm` | e      | 0    | Bitwise AND / Logical AND                            |
+| `or.ib  %Z, %X, imm` | e      | 1    | Bitwise OR / Logical OR                              |
+| `xor.ib %Z, %X, imm` | e      | 2    | Bitwise XOR                                          |
+| `inv.b  %Z, %X`      | e      | 2    | Pseudo-instruction: bitwise NOT (`xor.b %Z, %X, -1`) |
+| `not.b  %Z, %X`      | e      | 2    | Pseudo-instruction: logical NOT (`xor.b %Z, %X, 1`)  |
+| `sra.ib %Z, %X, imm` | e      | 3    | Read half at %Y and write to (%X+offset)             |
+| `srl.ib %Z, %X, imm` | e      | 4    | Read half at %Y and write to (%X+offset)             |
+| `sll.ib %Z, %X, imm` | e      | 5    | Read half at %Y and write to (%X+offset)             |
+| `add.ib %Z, %X, imm` | e      | 6    | Read half at %Y and write to (%X+offset)             |
 
 For halfwords:
 
 | Instruction          | Opcode | Func | Semantics                                            |
 |----------------------|--------|------|------------------------------------------------------|
-| `and.ih %Z, %X, imm` | c      | 0    | Bitwise AND / Logical AND                            |
-| `or.ih  %Z, %X, imm` | c      | 1    | Bitwise OR / Logical OR                              |
-| `xor.ih %Z, %X, imm` | c      | 2    | Bitwise XOR                                          |
-| `inv.h  %Z, %X`      | c      | 2    | Pseudo-instruction: bitwise NOT (`xor.h %Z, %X, -1`) |
-| `not.h  %Z, %X`      | c      | 2    | Pseudo-instruction: logical NOT (`xor.h %Z, %X, 1`)  |
-| `sra.ih %Z, %X, imm` | c      | 3    | Shift right (arithmetic)                             |
-| `srl.ih %Z, %X, imm` | c      | 4    | Shift right (logic)                                  |
-| `sll.ih %Z, %X, imm` | c      | 5    | Shift left (logic)                                   |
-| `add.ih %Z, %X, imm` | c      | 6    | Addition                                             |
+| `and.ih %Z, %X, imm` | f      | 0    | Bitwise AND / Logical AND                            |
+| `or.ih  %Z, %X, imm` | f      | 1    | Bitwise OR / Logical OR                              |
+| `xor.ih %Z, %X, imm` | f      | 2    | Bitwise XOR                                          |
+| `inv.h  %Z, %X`      | f      | 2    | Pseudo-instruction: bitwise NOT (`xor.h %Z, %X, -1`) |
+| `not.h  %Z, %X`      | f      | 2    | Pseudo-instruction: logical NOT (`xor.h %Z, %X, 1`)  |
+| `sra.ih %Z, %X, imm` | f      | 3    | Shift right (arithmetic)                             |
+| `srl.ih %Z, %X, imm` | f      | 4    | Shift right (logic)                                  |
+| `sll.ih %Z, %X, imm` | f      | 5    | Shift left (logic)                                   |
+| `add.ih %Z, %X, imm` | f      | 6    | Addition                                             |
 
 Additionally, the below instructions work on full registers but are suitable
 for any operand size.
 
 | Instruction          | Opcode | Func | Semantics                                  |
 |----------------------|--------|------|--------------------------------------------|
-| `slt.is %Z, %X, imm` | d      | 0    | Set %Z to 1 if %X < imm (signed), else 0   |
-| `slt.iu %Z, %X, imm` | d      | 1    | Set %Z to 1 if %X < imm (unsigned), else 0 |
+| `slt.is %Z, %X, imm` | b      | 0    | Set %Z to 1 if %X < imm (signed), else 0   |
+| `slt.iu %Z, %X, imm` | b      | 1    | Set %Z to 1 if %X < imm (unsigned), else 0 |
 
-### Arithmetic on registers only
+### Operations on registers only
+
+Special operations:
+
+| Instruction         | Opcode | Func | Semantics                                     |
+|---------------------|--------|------|-----------------------------------------------|
+| Illegal instruction | 0      | 0    | Traps on execution of zero-initialised memory |
 
 Analogous instructions are provided for bytes and halfwords.
 When we talk about logical instead of bitwise operations below,
@@ -231,35 +237,35 @@ For bytes:
 
 | Instruction        | Opcode | Func | Semantics                 |
 |--------------------|--------|------|---------------------------|
-| `and.b %Z, %Y, %X` | b      | 0    | Bitwise AND / Logical AND |
-| `or.b  %Z, %Y, %X` | b      | 1    | Bitwise OR / Logical OR   |
-| `xor.b %Z, %Y, %X` | b      | 2    | Bitwise XOR               |
-| `sra.b %Z, %Y, %X` | b      | 3    | Shift right (arithmetic)  |
-| `srl.b %Z, %Y, %X` | b      | 4    | Shift right (logical)     |
-| `sll.b %Z, %Y, %X` | b      | 5    | Shift left (logical)      |
-| `add.b %Z, %Y, %X` | b      | 6    | Addition                  |
-| `sub.b %Z, %Y, %X` | b      | 7    | Subtraction               |
+| `and.b %Z, %Y, %X` | 0      | 100  | Bitwise AND / Logical AND |
+| `or.b  %Z, %Y, %X` | 0      | 101  | Bitwise OR / Logical OR   |
+| `xor.b %Z, %Y, %X` | 0      | 102  | Bitwise XOR               |
+| `sra.b %Z, %Y, %X` | 0      | 103  | Shift right (arithmetic)  |
+| `srl.b %Z, %Y, %X` | 0      | 104  | Shift right (logical)     |
+| `sll.b %Z, %Y, %X` | 0      | 105  | Shift left (logical)      |
+| `add.b %Z, %Y, %X` | 0      | 106  | Addition                  |
+| `sub.b %Z, %Y, %X` | 0      | 107  | Subtraction               |
 
 For halfwords:
 
 | Instruction        | Opcode | Func | Semantics                 |
 |--------------------|--------|------|---------------------------|
-| `and.h %Z, %Y, %X` | f      | 0    | Bitwise AND / Logical AND |
-| `or.h  %Z, %Y, %X` | f      | 1    | Bitwise OR / Logical OR   |
-| `xor.h %Z, %Y, %X` | f      | 2    | Bitwise XOR               |
-| `sra.h %Z, %Y, %X` | f      | 3    | Shift right (arithmetic)  |
-| `srl.h %Z, %Y, %X` | f      | 4    | Shift right (logical)     |
-| `sll.h %Z, %Y, %X` | f      | 5    | Shift left (logical)      |
-| `add.h %Z, %Y, %X` | f      | 6    | Addition                  |
-| `sub.h %Z, %Y, %X` | f      | 7    | Subtraction               |
+| `and.h %Z, %Y, %X` | 0      | 110  | Bitwise AND / Logical AND |
+| `or.h  %Z, %Y, %X` | 0      | 111  | Bitwise OR / Logical OR   |
+| `xor.h %Z, %Y, %X` | 0      | 112  | Bitwise XOR               |
+| `sra.h %Z, %Y, %X` | 0      | 113  | Shift right (arithmetic)  |
+| `srl.h %Z, %Y, %X` | 0      | 114  | Shift right (logical)     |
+| `sll.h %Z, %Y, %X` | 0      | 115  | Shift left (logical)      |
+| `add.h %Z, %Y, %X` | 0      | 116  | Addition                  |
+| `sub.h %Z, %Y, %X` | 0      | 117  | Subtraction               |
 
 Additionally, the below instructions work on full registers but are suitable
 for any operand size.
 
 | Instruction        | Opcode | Func | Semantics                                 |
 |--------------------|--------|------|-------------------------------------------|
-| `slt.s %Z, %Y, %X` | f      | 0x10 | Set %Z to 1 if %Y < %X (signed), else 0   |
-| `slt.u %Z, %Y, %X` | f      | 0x11 | Set %Z to 1 if %Y < %X (unsigned), else 0 |
+| `slt.s %Z, %Y, %X` | 0      | 200  | Set %Z to 1 if %Y < %X (signed), else 0   |
+| `slt.u %Z, %Y, %X` | 0      | 201  | Set %Z to 1 if %Y < %X (unsigned), else 0 |
 
 ## Extensibility
 
