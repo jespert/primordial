@@ -147,14 +147,14 @@ We use RISC-V style conditional with fused test-and-branch instructions due to
 their simplicity and excellent ergonomics. Where necessary, we have enforced
 signedness suffixes (s, u) to mitigate accidental misuse.
 
-| Instruction            | Opcode | Func     | Semantics                              |
-|------------------------|--------|----------|----------------------------------------|
-| `beq %Y, %X, target`   | 4      | 0 (0000) | Branch to target if %X = %Y            |
-| `bne %Y, %X, target`   | 4      | 1 (0001) | Branch to target if %X ≠ %Y            |
-| `blt.s %Y, %X, target` | 4      | 8 (1000) | Branch to target if %X < %Y (signed)   |
-| `bge.s %Y, %X, target` | 4      | a (1010) | Branch to target if %X ≥ %Y (signed)   |
-| `blt.u %Y, %X, target` | 4      | c (1100) | Branch to target if %X < %Y (unsigned) |
-| `bge.u %Y, %X, target` | 4      | e (1110) | Branch to target if %X ≥ %Y (unsigned) |
+| Instruction            | Opcode | Func | Binary | Semantics                              |
+|------------------------|--------|------|--------|----------------------------------------|
+| `beq %Y, %X, target`   | 4      | 0    | 0000   | Branch to target if %X = %Y            |
+| `bne %Y, %X, target`   | 4      | 1    | 0001   | Branch to target if %X ≠ %Y            |
+| `blt.s %Y, %X, target` | 4      | 8    | 1000   | Branch to target if %X < %Y (signed)   |
+| `bge.s %Y, %X, target` | 4      | a    | 1010   | Branch to target if %X ≥ %Y (signed)   |
+| `blt.u %Y, %X, target` | 4      | c    | 1100   | Branch to target if %X < %Y (unsigned) |
+| `bge.u %Y, %X, target` | 4      | e    | 1110   | Branch to target if %X ≥ %Y (unsigned) |
 
 ### Load from memory
 
@@ -163,21 +163,21 @@ treated as a signed or unsigned value.
 We have enforced a suffix (s, u) on both to mitigate accidental misuse.
 This is unnecessary for halfwords because they match the register size.
 
-| Instruction              | Opcode | Func     | Semantics                                              |
-|--------------------------|--------|----------|--------------------------------------------------------|
-| `load.bs %Z, %X, offset` | 9      | 0 (0000) | Read byte at (%X+offset), sign extend, and write to %Z |
-| `load.h %Z, %X, offset`  | 9      | 1 (0001) | Read half at (%X+offset) and write to %Z               |
-| `load.bu %Z, %X, offset` | 9      | 4 (0100) | Read byte at (%X+offset), zero extend, and write to %Z |
+| Instruction              | Opcode | Func | Binary | Semantics                                              |
+|--------------------------|--------|------|--------|--------------------------------------------------------|
+| `load.bs %Z, %X, offset` | 9      | 0    | 0000   | Read byte at (%X+offset), sign extend, and write to %Z |
+| `load.h %Z, %X, offset`  | 9      | 1    | 0001   | Read half at (%X+offset) and write to %Z               |
+| `load.bu %Z, %X, offset` | 9      | 4    | 0100   | Read byte at (%X+offset), zero extend, and write to %Z |
 
 ### Store to memory
 
 Note that signedness is irrelevant for stores, so a single instruction per
 operand size suffices.
 
-| Instruction              | Opcode | Func     | Semantics                                |
-|--------------------------|--------|----------|------------------------------------------|
-| `store.b %Y, %X, offset` | 5      | 0 (0000) | Read byte at %Y and write to (%X+offset) |
-| `store.h %Y, %X, offset` | 5      | 1 (0001) | Read half at %Y and write to (%X+offset) |
+| Instruction              | Opcode | Func | Binary | Semantics                                |
+|--------------------------|--------|------|--------|------------------------------------------|
+| `store.b %Y, %X, offset` | 5      | 0    | 0000   | Read byte at %Y and write to (%X+offset) |
+| `store.h %Y, %X, offset` | 5      | 1    | 0001   | Read half at %Y and write to (%X+offset) |
 
 ### Arithmetic with immediates
 
