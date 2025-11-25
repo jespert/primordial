@@ -260,3 +260,11 @@ for any operand size.
 |--------------------|--------|------|-------------------------------------------|
 | `slt.s %Z, %Y, %X` | f      | 0x10 | Set %Z to 1 if %Y < %X (signed), else 0   |
 | `slt.u %Z, %Y, %X` | f      | 0x11 | Set %Z to 1 if %Y < %X (unsigned), else 0 |
+
+## Extensibility
+
+Even if it is not a primary goal, the design is quite extensible.
+We do not foresee running out of the R format minor opcode space
+(4096 operations), so we will probably only ever need one of those.
+Across the other two formats, A and B, we can define up to
+(15 opcodes) * (16 functions) = 240 operations that support 16-bit immediates.
