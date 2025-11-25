@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+cd "$(dirname $0)"
+mkdir -p .build
+
+go build -o .build/ -mod=readonly ./...
+go test ./...
+go vet ./...
+
+exit 0

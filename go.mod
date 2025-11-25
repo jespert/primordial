@@ -1,3 +1,3 @@
-module github.com/primordial-systems/monorepo
+module github.com/jespert/primordial
 
 go 1.25
