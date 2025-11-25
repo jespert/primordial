@@ -187,31 +187,31 @@ we assume that Booleans are stored as 0 or 1 exactly.
 
 For bytes:
 
-| Instruction          | Opcode | Func | Semantics                                           |
-|----------------------|--------|------|-----------------------------------------------------|
-| `and.ib %Z, %X, imm` | 8      | 0    | Bitwise AND / Logical AND                           |
-| `or.ib  %Z, %X, imm` | 8      | 1    | Bitwise OR / Logical OR                             |
-| `xor.ib %Z, %X, imm` | 8      | 2    | Bitwise XOR                                         |
-| `inv.b  %Z, %X`      | 8      | 2    | Pseudo-instruction: bitwise NOT (`xorb %Z, %X, -1`) |
-| `not.b  %Z, %X`      | 8      | 2    | Pseudo-instruction: logical NOT (`xorb %Z, %X, 1`)  |
-| `sra.ib %Z, %X, imm` | 8      | 3    | Read half at %Y and write to (%X+offset)            |
-| `srl.ib %Z, %X, imm` | 8      | 4    | Read half at %Y and write to (%X+offset)            |
-| `sll.ib %Z, %X, imm` | 8      | 5    | Read half at %Y and write to (%X+offset)            |
-| `add.ib %Z, %X, imm` | 8      | 6    | Read half at %Y and write to (%X+offset)            |
+| Instruction          | Opcode | Func | Semantics                                            |
+|----------------------|--------|------|------------------------------------------------------|
+| `and.ib %Z, %X, imm` | 8      | 0    | Bitwise AND / Logical AND                            |
+| `or.ib  %Z, %X, imm` | 8      | 1    | Bitwise OR / Logical OR                              |
+| `xor.ib %Z, %X, imm` | 8      | 2    | Bitwise XOR                                          |
+| `inv.b  %Z, %X`      | 8      | 2    | Pseudo-instruction: bitwise NOT (`xor.b %Z, %X, -1`) |
+| `not.b  %Z, %X`      | 8      | 2    | Pseudo-instruction: logical NOT (`xor.b %Z, %X, 1`)  |
+| `sra.ib %Z, %X, imm` | 8      | 3    | Read half at %Y and write to (%X+offset)             |
+| `srl.ib %Z, %X, imm` | 8      | 4    | Read half at %Y and write to (%X+offset)             |
+| `sll.ib %Z, %X, imm` | 8      | 5    | Read half at %Y and write to (%X+offset)             |
+| `add.ib %Z, %X, imm` | 8      | 6    | Read half at %Y and write to (%X+offset)             |
 
 For halfwords:
 
-| Instruction          | Opcode | Func | Semantics                                           |
-|----------------------|--------|------|-----------------------------------------------------|
-| `and.ih %Z, %X, imm` | c      | 0    | Bitwise AND / Logical AND                           |
-| `or.ih  %Z, %X, imm` | c      | 1    | Bitwise OR / Logical OR                             |
-| `xor.ih %Z, %X, imm` | c      | 2    | Bitwise XOR                                         |
-| `inv.h  %Z, %X`      | c      | 2    | Pseudo-instruction: bitwise NOT (`xorb %Z, %X, -1`) |
-| `not.h  %Z, %X`      | c      | 2    | Pseudo-instruction: logical NOT (`xorb %Z, %X, 1`)  |
-| `sra.ih %Z, %X, imm` | c      | 3    | Shift right (arithmetic)                            |
-| `srl.ih %Z, %X, imm` | c      | 4    | Shift right (logic)                                 |
-| `sll.ih %Z, %X, imm` | c      | 5    | Shift left (logic)                                  |
-| `add.ih %Z, %X, imm` | c      | 6    | Addition                                            |
+| Instruction          | Opcode | Func | Semantics                                            |
+|----------------------|--------|------|------------------------------------------------------|
+| `and.ih %Z, %X, imm` | c      | 0    | Bitwise AND / Logical AND                            |
+| `or.ih  %Z, %X, imm` | c      | 1    | Bitwise OR / Logical OR                              |
+| `xor.ih %Z, %X, imm` | c      | 2    | Bitwise XOR                                          |
+| `inv.h  %Z, %X`      | c      | 2    | Pseudo-instruction: bitwise NOT (`xor.h %Z, %X, -1`) |
+| `not.h  %Z, %X`      | c      | 2    | Pseudo-instruction: logical NOT (`xor.h %Z, %X, 1`)  |
+| `sra.ih %Z, %X, imm` | c      | 3    | Shift right (arithmetic)                             |
+| `srl.ih %Z, %X, imm` | c      | 4    | Shift right (logic)                                  |
+| `sll.ih %Z, %X, imm` | c      | 5    | Shift left (logic)                                   |
+| `add.ih %Z, %X, imm` | c      | 6    | Addition                                             |
 
 Additionally, the below instructions work on full registers but are suitable
 for any operand size.
