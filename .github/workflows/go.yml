@@ -1,0 +1,38 @@
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+
+permissions:
+  contents: write
+  actions: read
+  checks: write
+
+# Never cancel builds in main because it could disrupt releases.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Support the most recent two major versions.
+        go-version:
+          - "1.25"
+          - "1.24"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Acceptance test
+        run: ./ok
