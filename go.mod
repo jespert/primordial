@@ -1,3 +1,3 @@
-module github.com/primordial-systems/r16
+module github.com/primordial-systems/monorepo
 
 go 1.25
