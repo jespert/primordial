@@ -9,6 +9,7 @@ import (
 	"io"
 )
 
+// State of the machine (registers and memory).
 type State struct {
 	// Some memory ranges will not be used in practice due to MMIO,
 	// but it is easier to allocate the whole flat range.
@@ -22,10 +23,12 @@ type State struct {
 	ip uint16
 }
 
+// New creates a new State.
 func New() *State {
 	return &State{}
 }
 
+// Dump the state in human-friendly string representation to the given writer.
 func (m *State) Dump(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
 	_, _ = fmt.Fprint(w, "IP: ", m.ip)
