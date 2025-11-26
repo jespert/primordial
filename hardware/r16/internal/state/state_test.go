@@ -21,7 +21,7 @@ func TestState_Dump_empty(t *testing.T) {
 func verify(t *testing.T, expected, actual string) {
 	if actual != expected {
 		t.Errorf("FAIL: Unexpected dump\n\n")
-		t.Errorf("Expected:\n%s\nEOF\n\n", ExpectedStateDumpEmpty)
+		t.Errorf("Expected:\n%s\nEOF\n\n", expected)
 		t.Errorf("Actual:\n%s\nEOF\n\n", actual)
 	}
 }
