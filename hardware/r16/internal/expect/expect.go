@@ -1,0 +1,45 @@
+package expect
+
+import (
+	"fmt"
+	"strings"
+)
+
+type TestingT interface {
+	Errorf(format string, args ...interface{})
+	Logf(format string, args ...interface{})
+}
+
+func Equal[T comparable](t TestingT, want, got T) bool {
+	if want == got {
+		return true
+	}
+
+	const msg = "values are not equal"
+	report2(t, msg, want, got)
+	return false
+}
+
+func report2(t TestingT, msg string, want, got any) {
+	t.Errorf("FAIL: %v\n", msg)
+
+	t.Logf("Want:")
+	if s := fmt.Sprintf("%+v", want); isShortStr(s) {
+		t.Logf("   %v\n", s)
+	} else {
+		t.Logf("\n%v\n\n", s)
+	}
+
+	t.Logf("Got:")
+	if s := fmt.Sprintf("%+v", got); isShortStr(s) {
+		t.Logf("    %v\n", s)
+	} else {
+		t.Logf("\n%v\n", s)
+	}
+}
+
+func isShortStr(s string) bool {
+	// 72 (convenient terminal length) - 8 (prefix) = 64
+	const maxShortLen = 64
+	return len(s) <= maxShortLen && strings.IndexAny(s, "\n\v\f\r") == -1
+}
