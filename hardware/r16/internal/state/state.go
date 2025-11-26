@@ -5,6 +5,7 @@
 package state
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 )
@@ -59,8 +60,20 @@ func (m *State) dumpMemory(w io.Writer) {
 	const bytesPerLine = 16
 	const halfLine = bytesPerLine / 2
 
-	for i := range len(m.memory) / bytesPerLine {
+	var zeroLine [16]byte
+	var numEmpty int
+	for i := 0; i < len(m.memory)/bytesPerLine; i++ {
 		baseAddress := i * bytesPerLine
+		line := m.memory[baseAddress : baseAddress+bytesPerLine]
+
+		if bytes.Compare(line, zeroLine[:]) == 0 {
+			numEmpty++
+			continue
+		} else if numEmpty > 0 {
+			_, _ = fmt.Fprintf(w, "(%d empty lines)\n", numEmpty)
+			numEmpty = 0
+		}
+
 		_, _ = fmt.Fprintf(w, "%04x  ", baseAddress)
 
 		for i := 0; i < halfLine; i++ {
@@ -85,5 +98,10 @@ func (m *State) dumpMemory(w io.Writer) {
 		}
 
 		_, _ = fmt.Fprint(w, "|\n")
+	}
+
+	if numEmpty > 0 {
+		_, _ = fmt.Fprintf(w, "(%d empty lines)\n", numEmpty)
+		numEmpty = 0
 	}
 }
