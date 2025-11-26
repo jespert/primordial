@@ -16,12 +16,37 @@ func Verify(t *testing.T, actual string) {
 	expectedFilePath := filepath.Join(testdataDir, expectedFileName)
 	expected, err := os.ReadFile(expectedFilePath)
 	if err != nil {
-		t.Fatalf("Failed to read expected file: %v", err)
+		t.Fatalf("Failed to read expected data: %v", err)
 	}
 
-	if string(expected) != actual {
-		t.Errorf("FAIL: Unexpected dump\n\n")
-		t.Errorf("Expected:\n%s\nEOF\n\n", expected)
-		t.Errorf("Actual:\n%s\nEOF\n\n", actual)
+	actualFileName := name + ".actual.txt"
+	actualFilePath := filepath.Join(testdataDir, actualFileName)
+	if err := os.WriteFile(
+		actualFilePath,
+		[]byte(actual),
+		0644,
+	); err != nil {
+		t.Fatalf("Failed to write actual data: %v", err)
 	}
+
+	if string(expected) == actual {
+		// Test passed.
+		return
+	}
+
+	// Reporting absolute paths improves the developer UX.
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatalf(
+			"Failed to get current working directory: %v",
+			err,
+		)
+	}
+
+	expectedFilePath = filepath.Join(cwd, expectedFilePath)
+	actualFilePath = filepath.Join(cwd, actualFilePath)
+
+	t.Errorf("FAIL: Unexpected result\n\n")
+	t.Logf("Expected: %v\n", expectedFilePath)
+	t.Logf("Actual: %v\n", actualFilePath)
 }
