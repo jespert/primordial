@@ -1,0 +1,86 @@
+// Package state contains the state of the machine (registers and memory)
+//
+// The reason the State is in a separate package is to enforce invariants,
+// the most important of which is not overwriting ZR.
+package state
+
+import (
+	"fmt"
+	"io"
+)
+
+type State struct {
+	// Some memory ranges will not be used in practice due to MMIO,
+	// but it is easier to allocate the whole flat range.
+	memory [64 * 1024]byte
+
+	// The register at index 0 won't be used, and it is tempting to store
+	// the instruction pointer there, but probably not worth the confusion.
+	registers [16]int16
+
+	// Instruction pointer.
+	ip uint16
+}
+
+func New() *State {
+	return &State{}
+}
+
+func (m *State) Dump(w io.Writer) {
+	// There is nothing we can do on IO failure, so we just ignore errors.
+	_, _ = fmt.Fprint(w, "IP: ", m.ip)
+	_, _ = fmt.Fprint(w, "\n\nRegisters:\n")
+	m.dumpRegisters(w)
+
+	_, _ = fmt.Fprint(w, "\nMemory:\n")
+	m.dumpMemory(w)
+}
+
+func (m *State) dumpRegisters(w io.Writer) {
+	// There is nothing we can do on IO failure, so we just ignore errors.
+	for i := 1; i < len(m.registers); i++ {
+		v := m.registers[i]
+		_, _ = fmt.Fprintf(
+			w,
+			"%1X: 0x%04x S:%d U:%d\n",
+			i,
+			v,
+			v,
+			uint16(v),
+		)
+	}
+}
+
+func (m *State) dumpMemory(w io.Writer) {
+	// There is nothing we can do on IO failure, so we just ignore errors.
+	const bytesPerLine = 16
+	const halfLine = bytesPerLine / 2
+
+	for i := range len(m.memory) / bytesPerLine {
+		baseAddress := i * bytesPerLine
+		_, _ = fmt.Fprintf(w, "%04x  ", baseAddress)
+
+		for i := 0; i < halfLine; i++ {
+			_, _ = fmt.Fprintf(w, "%02x ", m.memory[baseAddress+i])
+		}
+
+		_, _ = fmt.Fprint(w, " ")
+
+		for i := halfLine; i < bytesPerLine; i++ {
+			_, _ = fmt.Fprintf(w, "%02x ", m.memory[baseAddress+i])
+		}
+
+		_, _ = fmt.Fprint(w, " |")
+
+		for i := 0; i < bytesPerLine; i++ {
+			v := m.memory[baseAddress+i]
+			if v >= 32 && v <= 126 {
+				_, _ = fmt.Fprintf(w, "%c", v)
+			} else {
+				_, _ = fmt.Fprint(w, ".")
+			}
+		}
+
+		_, _ = fmt.Fprint(w, "|\n")
+	}
+}
