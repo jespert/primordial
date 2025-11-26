@@ -22,6 +22,9 @@ func Verify(t *testing.T, actual string) {
 	actualFileName := name + ".actual.txt"
 	actualFilePath := filepath.Join(testdataDir, actualFileName)
 	if string(expected) == actual {
+		// Remove the actual file on success. This serves two purposes:
+		// 1. Prevent actual files from interfering with test caching.
+		// 2. Make it easier to identify the failed tests.
 		if err := os.Remove(actualFilePath); err != nil {
 			t.Logf("Failed to remove actual data: %v", err)
 		}
