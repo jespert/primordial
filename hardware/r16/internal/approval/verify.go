@@ -21,17 +21,21 @@ func Verify(t *testing.T, actual string) {
 
 	actualFileName := name + ".actual.txt"
 	actualFilePath := filepath.Join(testdataDir, actualFileName)
+	if string(expected) == actual {
+		if err := os.Remove(actualFilePath); err != nil {
+			t.Logf("Failed to remove actual data: %v", err)
+		}
+
+		// Test passed.
+		return
+	}
+
 	if err := os.WriteFile(
 		actualFilePath,
 		[]byte(actual),
 		0644,
 	); err != nil {
 		t.Fatalf("Failed to write actual data: %v", err)
-	}
-
-	if string(expected) == actual {
-		// Test passed.
-		return
 	}
 
 	// Reporting absolute paths improves the developer UX.
