@@ -1,8 +1,6 @@
 package state_test
 
 import (
-	"bytes"
-	_ "embed"
 	"testing"
 
 	"github.com/jespert/primordial/hardware/r16/internal/approval"
@@ -10,8 +8,8 @@ import (
 )
 
 func TestState_Dump_empty(t *testing.T) {
-	w := &bytes.Buffer{}
+	verifier := approval.NewTextVerifier(t)
 	m := state.New()
-	m.Dump(w)
-	approval.Verify(t, w.String())
+	m.Dump(verifier.Writer())
+	verifier.Verify()
 }
