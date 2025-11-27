@@ -92,11 +92,23 @@ type T struct {
 	LogOutput   bytes.Buffer
 }
 
+func (t *T) Error(args ...interface{}) {
+	for _, arg := range args {
+		_, _ = fmt.Fprintf(&t.ErrorOutput, "%v", arg)
+	}
+}
+
 func (t *T) Errorf(format string, args ...interface{}) {
 	t.Failed = true
 
 	// There's nothing we can do about IO errors here.
 	_, _ = fmt.Fprintf(&t.ErrorOutput, format, args...)
+}
+
+func (t *T) Log(args ...interface{}) {
+	for _, arg := range args {
+		_, _ = fmt.Fprintf(&t.LogOutput, "%v", arg)
+	}
 }
 
 func (t *T) Logf(format string, args ...interface{}) {
