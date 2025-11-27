@@ -9,6 +9,7 @@ import (
 var _ TestingT = &testing.T{}
 
 type TestingT interface {
+	Helper()
 	Error(args ...interface{})
 	Errorf(format string, args ...interface{})
 	Log(args ...interface{})
@@ -16,6 +17,7 @@ type TestingT interface {
 }
 
 func Equal[T comparable](t TestingT, want, got T) bool {
+	t.Helper()
 	if want == got {
 		return true
 	}
