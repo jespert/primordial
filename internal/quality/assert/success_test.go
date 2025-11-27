@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/jespert/primordial/hardware/r16/internal/assert"
+	"github.com/jespert/primordial/internal/quality/assert"
 )
 
 func TestSuccess(t *testing.T) {

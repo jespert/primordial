@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/jespert/primordial/hardware/r16/internal/expect"
+	"github.com/jespert/primordial/internal/quality/expect"
 )
 
 type result struct {

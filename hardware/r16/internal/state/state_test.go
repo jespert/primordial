@@ -3,8 +3,8 @@ package state_test
 import (
 	"testing"
 
-	"github.com/jespert/primordial/hardware/r16/internal/approval"
 	"github.com/jespert/primordial/hardware/r16/internal/state"
+	"github.com/jespert/primordial/internal/quality/approval"
 )
 
 func TestState_Dump_empty(t *testing.T) {
