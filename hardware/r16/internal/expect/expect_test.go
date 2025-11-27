@@ -9,7 +9,7 @@ import (
 )
 
 type result struct {
-	expected bool
+	ok       bool
 	errorOut string
 	logOut   string
 }
@@ -17,69 +17,80 @@ type result struct {
 func TestEqual(t *testing.T) {
 	t.Run("bool", func(t *testing.T) {
 		for _, tc := range []struct {
-			x, y bool
+			want, got bool
 			result
 		}{
 			{
-				x:      false,
-				y:      false,
-				result: result{expected: true},
+				want:   false,
+				got:    false,
+				result: result{ok: true},
 			},
 			{
-				x: false,
-				y: true,
+				want: false,
+				got:  true,
 				result: result{
-					expected: false,
+					ok:       false,
 					errorOut: "FAIL: values are not equal\n",
 					logOut: "Want:   false\n" +
 						"Got:    true\n",
 				},
 			},
 			{
-				x: true,
-				y: false,
+				want: true,
+				got:  false,
 				result: result{
-					expected: false,
+					ok:       false,
 					errorOut: "FAIL: values are not equal\n",
 					logOut: "Want:   true\n" +
 						"Got:    false\n",
 				},
 			},
 			{
-				x: true,
-				y: true,
+				want: true,
+				got:  true,
 				result: result{
-					expected: true,
+					ok: true,
 				},
 			},
 		} {
-			name := fmt.Sprintf("%v_%v", tc.x, tc.y)
+			name := fmt.Sprintf("%v_%v", tc.want, tc.got)
 			t.Run(name, func(t *testing.T) {
 				tMock := &T{}
-				actual := expect.Equal(tMock, tc.x, tc.y)
-				report(tMock, tc.x, tc.y, actual, tc.result)
+				ok := expect.Equal(tMock, tc.want, tc.got)
+				validate(t, tMock, tc.want, tc.got, ok, tc.result)
 			})
 		}
 	})
 }
 
-func report(t *T, x, y any, ok bool, result result) {
-	if ok != result.expected {
-		t.Errorf("Expected %v, got %v!", result.expected, ok)
-		t.Logf("Want:\n%v\n", result.expected)
-		t.Logf("Got:\n%v\n", ok)
+// The terminology can be a bit confusing here, because we're talking about
+// expectation vs. actual results at two different levels:
+// - The user level (want, got)
+// - The test validation level (ok, result.ok)
+func validate(t *testing.T, tMock *T, want, got any, ok bool, result result) {
+	t.Helper()
+	if !tMock.HelperCalled {
+		t.Errorf("Helper() was not called!")
 	}
-	if t.Failed == result.expected {
-		t.Errorf("Failed with %v and %v!", x, y)
+	if ok != result.ok {
+		t.Errorf("Expected that the test returns %v, got %v!", result.ok, ok)
+		t.Logf("Want return:  %v\n", result.ok)
+		t.Logf("Got return:   %v\n", ok)
 	}
-	if t.ErrorOutput.String() != result.errorOut {
+	if tMock.Failed && result.ok {
+		t.Errorf("Test failed unexpectedly with %v and %v!", want, got)
+	}
+	if !tMock.Failed && !result.ok {
+		t.Errorf("Test succeeded unexpectedly with %v and %v!", want, got)
+	}
+	if tMock.ErrorOutput.String() != result.errorOut {
 		t.Errorf("Unexpected error output")
-		t.Errorf("Want:\n%v\n", t.ErrorOutput.String())
+		t.Errorf("Want:\n%v\n", tMock.ErrorOutput.String())
 		t.Errorf("Got:\n%v\n", result.errorOut)
 	}
-	if t.LogOutput.String() != result.logOut {
+	if tMock.LogOutput.String() != result.logOut {
 		t.Errorf("Unexpected log output")
-		t.Errorf("Want:\n%v\n", t.LogOutput.String())
+		t.Errorf("Want:\n%v\n", tMock.LogOutput.String())
 		t.Errorf("Got:%v\n", result.logOut)
 	}
 }
@@ -87,9 +98,14 @@ func report(t *T, x, y any, ok bool, result result) {
 var _ expect.TestingT = &T{}
 
 type T struct {
-	Failed      bool
-	ErrorOutput bytes.Buffer
-	LogOutput   bytes.Buffer
+	Failed       bool
+	ErrorOutput  bytes.Buffer
+	LogOutput    bytes.Buffer
+	HelperCalled bool
+}
+
+func (t *T) Helper() {
+	t.HelperCalled = true
 }
 
 func (t *T) Error(args ...interface{}) {
