@@ -1,6 +1,8 @@
 package approval
 
 import (
+	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,7 +18,7 @@ func Verify(t *testing.T, actual string) {
 	expectedFilePath := filepath.Join(testdataDir, expectedFileName)
 	expected, err := os.ReadFile(expectedFilePath)
 	if err != nil {
-		t.Fatalf("Failed to read expected data: %v", err)
+		t.Fatal("Failed to read expected data:", err)
 	}
 
 	actualFileName := name + ".actual.txt"
@@ -25,8 +27,9 @@ func Verify(t *testing.T, actual string) {
 		// Remove the actual file on success. This serves two purposes:
 		// 1. Prevent actual files from interfering with test caching.
 		// 2. Make it easier to identify the failed tests.
-		if err := os.Remove(actualFilePath); err != nil {
-			t.Logf("Failed to remove actual data: %v", err)
+		err := os.Remove(actualFilePath)
+		if err != nil && !errors.Is(err, fs.ErrNotExist) {
+			t.Fatal("Failed to remove actual data:", err)
 		}
 
 		// Test passed.
@@ -38,16 +41,13 @@ func Verify(t *testing.T, actual string) {
 		[]byte(actual),
 		0644,
 	); err != nil {
-		t.Fatalf("Failed to write actual data: %v", err)
+		t.Fatal("Failed to write actual data:", err)
 	}
 
 	// Reporting absolute paths improves the developer UX.
 	cwd, err := os.Getwd()
 	if err != nil {
-		t.Fatalf(
-			"Failed to get current working directory: %v",
-			err,
-		)
+		t.Fatal("Failed to get current working directory:", err)
 	}
 
 	expectedFilePath = filepath.Join(cwd, expectedFilePath)

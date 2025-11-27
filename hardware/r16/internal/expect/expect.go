@@ -3,10 +3,15 @@ package expect
 import (
 	"fmt"
 	"strings"
+	"testing"
 )
 
+var _ TestingT = &testing.T{}
+
 type TestingT interface {
+	Error(args ...interface{})
 	Errorf(format string, args ...interface{})
+	Log(args ...interface{})
 	Logf(format string, args ...interface{})
 }
 
@@ -23,14 +28,14 @@ func Equal[T comparable](t TestingT, want, got T) bool {
 func report2(t TestingT, msg string, want, got any) {
 	t.Errorf("FAIL: %v\n", msg)
 
-	t.Logf("Want:")
+	t.Log("Want:")
 	if s := fmt.Sprintf("%+v", want); isShortStr(s) {
 		t.Logf("   %v\n", s)
 	} else {
 		t.Logf("\n%v\n\n", s)
 	}
 
-	t.Logf("Got:")
+	t.Log("Got:")
 	if s := fmt.Sprintf("%+v", got); isShortStr(s) {
 		t.Logf("    %v\n", s)
 	} else {
