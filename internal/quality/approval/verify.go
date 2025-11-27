@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jespert/primordial/hardware/r16/internal/assert"
+	"github.com/jespert/primordial/internal/quality/assert"
 )
 
 var _ TestingT = &testing.T{}

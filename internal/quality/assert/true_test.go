@@ -3,7 +3,7 @@ package assert_test
 import (
 	"testing"
 
-	"github.com/jespert/primordial/hardware/r16/internal/assert"
+	"github.com/jespert/primordial/internal/quality/assert"
 )
 
 func TestTrue(t *testing.T) {
