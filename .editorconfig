@@ -4,6 +4,9 @@ indent_size = tab
 indent_style = tab
 insert_final_newline = true
 trim_trailing_whitespace = true
+max_line_length = 80
+
+[*.go]
 max_line_length = 100
 
 # The YAML standard convention uses 2 spaces as indentation,
