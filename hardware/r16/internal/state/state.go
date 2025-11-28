@@ -10,6 +10,8 @@ import (
 	"io"
 )
 
+type Address uint16
+
 // State of the machine (registers and memory).
 type State struct {
 	// Some memory ranges will not be used in practice due to MMIO,
@@ -21,12 +23,20 @@ type State struct {
 	registers [16]int16
 
 	// Instruction pointer.
-	ip uint16
+	ip Address
 }
 
 // New creates a new State.
 func New() *State {
 	return &State{}
+}
+
+func (m *State) IP() Address {
+	return m.ip
+}
+
+func (m *State) SetIP(address Address) {
+	m.ip = address
 }
 
 // Dump the state in human-friendly string representation to the given writer.
