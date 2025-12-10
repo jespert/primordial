@@ -33,17 +33,22 @@ func New() *State {
 func (m *State) Dump(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
 	_, _ = fmt.Fprint(w, "IP: ", m.ip)
-	_, _ = fmt.Fprint(w, "\n\nRegisters:\n")
-	m.dumpRegisters(w)
+	_, _ = fmt.Fprint(w, "\n\nNon-zero registers:\n")
+	m.dumpNonZeroRegisters(w)
 
 	_, _ = fmt.Fprint(w, "\nMemory:\n")
 	m.dumpMemory(w)
 }
 
-func (m *State) dumpRegisters(w io.Writer) {
+func (m *State) dumpNonZeroRegisters(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
-	for i := 1; i < len(m.registers); i++ {
-		v := m.registers[i]
+	allZero := true
+	for i, v := range m.registers {
+		if v == 0 {
+			continue
+		}
+
+		allZero = false
 		_, _ = fmt.Fprintf(
 			w,
 			"%1X: 0x%04x S:%d U:%d\n",
@@ -52,6 +57,10 @@ func (m *State) dumpRegisters(w io.Writer) {
 			v,
 			uint16(v),
 		)
+	}
+
+	if allZero {
+		_, _ = fmt.Fprint(w, "(none)\n")
 	}
 }
 
