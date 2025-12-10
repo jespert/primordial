@@ -78,8 +78,12 @@ func (m *State) dumpMemory(w io.Writer) {
 		if bytes.Compare(line, zeroLine[:]) == 0 {
 			numEmpty++
 			continue
-		} else if numEmpty > 0 {
-			_, _ = fmt.Fprintf(w, "(%d empty lines)\n", numEmpty)
+		} else if numEmpty != 0 {
+			if numEmpty == 1 {
+				_, _ = fmt.Fprint(w, "(1 empty line)\n")
+			} else {
+				_, _ = fmt.Fprintf(w, "(%d empty lines)\n", numEmpty)
+			}
 			numEmpty = 0
 		}
 
