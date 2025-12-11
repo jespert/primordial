@@ -27,6 +27,21 @@ func Equal[T comparable](t TestingT, want, got T) bool {
 	return false
 }
 
+func Panic(t TestingT, fn func()) (ok bool) {
+	t.Helper()
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error(t, "expected panic")
+			ok = false
+		}
+	}()
+
+	ok = true
+	fn()
+	return ok
+}
+
 func report2(t TestingT, msg string, want, got any) {
 	t.Errorf("FAIL: %v\n", msg)
 

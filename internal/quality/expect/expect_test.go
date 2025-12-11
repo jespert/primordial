@@ -148,6 +148,22 @@ func TestEqual_string(t *testing.T) {
 	}
 }
 
+func TestPanic_success(t *testing.T) {
+	tMock := &T{}
+	ok := expect.Panic(tMock, func() { panic("test panic") })
+	if !ok {
+		t.Error("Expected panic")
+	}
+}
+
+func TestPanic_fail(t *testing.T) {
+	tMock := &T{}
+	ok := expect.Panic(tMock, func() {})
+	if ok {
+		t.Error("Unexpected panic")
+	}
+}
+
 // The terminology can be a bit confusing here, because we're talking about
 // expectation vs. actual results at two different levels:
 // - The user level (want, got)
