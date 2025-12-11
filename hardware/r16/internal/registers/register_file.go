@@ -1,3 +1,7 @@
+// Package registers implements the register file.
+//
+// The register file is its own package to enforce the invariant that the
+// zero register is always zero.
 package registers
 
 import "github.com/jespert/primordial/internal/quality/assert"
