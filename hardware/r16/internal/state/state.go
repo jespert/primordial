@@ -1,13 +1,12 @@
 // Package state contains the state of the machine (registers and memory)
-//
-// The reason the State is in a separate package is to enforce invariants,
-// the most important of which is not overwriting ZR.
 package state
 
 import (
 	"bytes"
 	"fmt"
 	"io"
+
+	"github.com/jespert/primordial/hardware/r16/internal/registers"
 )
 
 // State of the machine (registers and memory).
@@ -16,9 +15,7 @@ type State struct {
 	// but it is easier to allocate the whole flat range.
 	memory [64 * 1024]byte
 
-	// The register at index 0 won't be used, and it is tempting to store
-	// the instruction pointer there, but probably not worth the confusion.
-	registers [16]int16
+	registers registers.File
 
 	// Instruction pointer.
 	ip uint16
@@ -43,7 +40,8 @@ func (m *State) Dump(w io.Writer) {
 func (m *State) dumpNonZeroRegisters(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
 	allZero := true
-	for i, v := range m.registers {
+	for i := range registers.NumRegisters {
+		v := m.registers.Read(i)
 		if v == 0 {
 			continue
 		}
