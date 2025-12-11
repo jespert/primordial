@@ -61,6 +61,93 @@ func TestEqual_bool(t *testing.T) {
 	}
 }
 
+func TestEqual_string(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		want, got string
+		result
+	}{
+		{
+			name:   "same short string",
+			want:   "foo",
+			got:    "foo",
+			result: result{ok: true},
+		},
+		{
+			name: "different short string",
+			want: "foo",
+			got:  "bar",
+			result: result{
+				ok:       false,
+				errorOut: "FAIL: values are not equal\n",
+				logOut: "Want:   foo\n" +
+					"Got:    bar\n",
+			},
+		},
+		{
+			name:   "same long string",
+			want:   longStr1,
+			got:    longStr1,
+			result: result{ok: true},
+		},
+		{
+			name: "short and long string",
+			want: "foo",
+			got:  longStr2,
+			result: result{
+				ok:       false,
+				errorOut: "FAIL: values are not equal\n",
+				logOut: "Want:   foo\n" +
+					"Got:\n" +
+					"Donuts in the break room pulling teeth,\n" +
+					"nor strategic staircase,\n" +
+					"yet high touch client.\n",
+			},
+		},
+		{
+			name: "long and short string",
+			want: longStr1,
+			got:  "foo",
+			result: result{
+				ok:       false,
+				errorOut: "FAIL: values are not equal\n",
+				logOut: "Want:\n" +
+					"Lorem ipsum dolor sit amet,\n" +
+					"consectetur adipiscing elit.\n" +
+					"Donec auctor, lorem quis tincidunt consequat,\n" +
+					"elit elit dignissim elit.\n" +
+					"\n" +
+					"Got:    foo\n",
+			},
+		},
+		{
+			name: "different long strings",
+			want: longStr1,
+			got:  longStr2,
+			result: result{
+				ok:       false,
+				errorOut: "FAIL: values are not equal\n",
+				logOut: "Want:\n" +
+					"Lorem ipsum dolor sit amet,\n" +
+					"consectetur adipiscing elit.\n" +
+					"Donec auctor, lorem quis tincidunt consequat,\n" +
+					"elit elit dignissim elit.\n" +
+					"\n" +
+					"Got:\n" +
+					"Donuts in the break room pulling teeth,\n" +
+					"nor strategic staircase,\n" +
+					"yet high touch client.\n",
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			tMock := &T{}
+			ok := expect.Equal(tMock, tc.want, tc.got)
+			validate(t, tMock, tc.want, tc.got, ok, tc.result)
+		})
+	}
+}
+
 // The terminology can be a bit confusing here, because we're talking about
 // expectation vs. actual results at two different levels:
 // - The user level (want, got)
@@ -129,3 +216,12 @@ func (t *T) Logf(format string, args ...interface{}) {
 	// There's nothing we can do about IO errors here.
 	_, _ = fmt.Fprintf(&t.LogOutput, format, args...)
 }
+
+const longStr1 = `Lorem ipsum dolor sit amet,
+consectetur adipiscing elit.
+Donec auctor, lorem quis tincidunt consequat,
+elit elit dignissim elit.`
+
+const longStr2 = `Donuts in the break room pulling teeth,
+nor strategic staircase,
+yet high touch client.`
