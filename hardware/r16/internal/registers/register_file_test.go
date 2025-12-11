@@ -20,3 +20,15 @@ func TestFile_Write_and_read_from_general_register(t *testing.T) {
 		expect.Equal(t, int16(i), file.Read(i))
 	}
 }
+
+func TestFile_Read_out_of_bounds_above(t *testing.T) {
+	// The register number is too high.
+	var file registers.File
+	expect.Panic(t, func() { file.Read(registers.NumRegisters) })
+}
+
+func TestFile_Read_out_of_bounds_under(t *testing.T) {
+	// The register number is too low.
+	var file registers.File
+	expect.Panic(t, func() { file.Read(-1) })
+}
