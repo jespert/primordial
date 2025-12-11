@@ -14,53 +14,51 @@ type result struct {
 	logOut   string
 }
 
-func TestEqual(t *testing.T) {
-	t.Run("bool", func(t *testing.T) {
-		for _, tc := range []struct {
-			want, got bool
-			result
-		}{
-			{
-				want:   false,
-				got:    false,
-				result: result{ok: true},
+func TestEqual_bool(t *testing.T) {
+	for _, tc := range []struct {
+		want, got bool
+		result
+	}{
+		{
+			want:   false,
+			got:    false,
+			result: result{ok: true},
+		},
+		{
+			want: false,
+			got:  true,
+			result: result{
+				ok:       false,
+				errorOut: "FAIL: values are not equal\n",
+				logOut: "Want:   false\n" +
+					"Got:    true\n",
 			},
-			{
-				want: false,
-				got:  true,
-				result: result{
-					ok:       false,
-					errorOut: "FAIL: values are not equal\n",
-					logOut: "Want:   false\n" +
-						"Got:    true\n",
-				},
+		},
+		{
+			want: true,
+			got:  false,
+			result: result{
+				ok:       false,
+				errorOut: "FAIL: values are not equal\n",
+				logOut: "Want:   true\n" +
+					"Got:    false\n",
 			},
-			{
-				want: true,
-				got:  false,
-				result: result{
-					ok:       false,
-					errorOut: "FAIL: values are not equal\n",
-					logOut: "Want:   true\n" +
-						"Got:    false\n",
-				},
+		},
+		{
+			want: true,
+			got:  true,
+			result: result{
+				ok: true,
 			},
-			{
-				want: true,
-				got:  true,
-				result: result{
-					ok: true,
-				},
-			},
-		} {
-			name := fmt.Sprintf("%v_%v", tc.want, tc.got)
-			t.Run(name, func(t *testing.T) {
-				tMock := &T{}
-				ok := expect.Equal(tMock, tc.want, tc.got)
-				validate(t, tMock, tc.want, tc.got, ok, tc.result)
-			})
-		}
-	})
+		},
+	} {
+		name := fmt.Sprintf("%v_%v", tc.want, tc.got)
+		t.Run(name, func(t *testing.T) {
+			tMock := &T{}
+			ok := expect.Equal(tMock, tc.want, tc.got)
+			validate(t, tMock, tc.want, tc.got, ok, tc.result)
+		})
+	}
 }
 
 // The terminology can be a bit confusing here, because we're talking about
