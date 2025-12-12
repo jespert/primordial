@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/jespert/primordial/hardware/r16/internal/registers"
+	"github.com/jespert/primordial/hardware/r16/internal/state"
 )
 
 // Machine of the machine (registers and memory).
@@ -15,7 +15,7 @@ type Machine struct {
 	// but it is easier to allocate the whole flat range.
 	memory [64 * 1024]byte
 
-	registers registers.File
+	registers state.Registers
 
 	// Instruction pointer.
 	ip uint16
@@ -40,7 +40,7 @@ func (m *Machine) Dump(w io.Writer) {
 func (m *Machine) dumpNonZeroRegisters(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
 	allZero := true
-	for i := range registers.NumRegisters {
+	for i := range state.NumRegisters {
 		v := m.registers.Read(i)
 		if v == 0 {
 			continue
