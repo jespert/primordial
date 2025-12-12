@@ -1,5 +1,5 @@
-// Package state contains the state of the machine (registers and memory)
-package state
+// Package machine represents an r16 machine.
+package machine
 
 import (
 	"bytes"
@@ -9,8 +9,8 @@ import (
 	"github.com/jespert/primordial/hardware/r16/internal/registers"
 )
 
-// State of the machine (registers and memory).
-type State struct {
+// Machine of the machine (registers and memory).
+type Machine struct {
 	// Some memory ranges will not be used in practice due to MMIO,
 	// but it is easier to allocate the whole flat range.
 	memory [64 * 1024]byte
@@ -21,13 +21,13 @@ type State struct {
 	ip uint16
 }
 
-// New creates a new State.
-func New() *State {
-	return &State{}
+// New creates a new Machine.
+func New() *Machine {
+	return &Machine{}
 }
 
 // Dump the state in human-friendly string representation to the given writer.
-func (m *State) Dump(w io.Writer) {
+func (m *Machine) Dump(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
 	_, _ = fmt.Fprint(w, "IP: ", m.ip)
 	_, _ = fmt.Fprint(w, "\n\nNon-zero registers:\n")
@@ -37,7 +37,7 @@ func (m *State) Dump(w io.Writer) {
 	m.dumpMemory(w)
 }
 
-func (m *State) dumpNonZeroRegisters(w io.Writer) {
+func (m *Machine) dumpNonZeroRegisters(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
 	allZero := true
 	for i := range registers.NumRegisters {
@@ -62,7 +62,7 @@ func (m *State) dumpNonZeroRegisters(w io.Writer) {
 	}
 }
 
-func (m *State) dumpMemory(w io.Writer) {
+func (m *Machine) dumpMemory(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
 	const bytesPerLine = 16
 	const halfLine = bytesPerLine / 2
