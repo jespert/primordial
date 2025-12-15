@@ -184,18 +184,18 @@ For the A and B formats, the two LSBs also determine the type:
 
 ### Unconditional control flow
 
-| Instruction           | Opcode | Func | Semantics                                               |
-|-----------------------|--------|------|---------------------------------------------------------|
-| `jalz %Z, %A, offset` | 8      | 0    | Jump and link saving to integer register %Z             |
-| `rjump %A, offset`    | 8      | 0    | Pseudo-instruction: `jalz %zr, %A, target`              |
-| `jump target`         | 8      | 0    | Pseudo-instruction: `jalz %zr, %bp, target`             |
-| `ret`                 | 8      | 0    | Pseudo-instruction: `jalz %zr, %rp, 0`                  |
-| `mret`                | 8      | 0    | Pseudo-instruction: `jalz %zr, %mp, 0` (millicode)      |
-| `jal %C, %A, offset`  | 8      | 1    | Jump and link                                           |
-| `rcall %A, offset`    | 8      | 1    | Pseudo-instruction: `call %rp, %A, offset`              |
-| `rmcall %A, offset`   | 8      | 1    | Pseudo-instruction: `call %mp, %A, offset`              |
-| `call target`         | 8      | 1    | Pseudo-instruction: `call %rp, %bp, target`             |
-| `mcall target`        | 8      | 1    | Pseudo-instruction: `call %mp, %bp, target` (millicode) |
+| Instruction           | Opcode | Func | Semantics                                              |
+|-----------------------|--------|------|--------------------------------------------------------|
+| `jalz %Z, %A, offset` | 8      | 0    | Jump and link saving to integer register %Z            |
+| `rjump %A, offset`    | 8      | 0    | Pseudo-instruction: `jalz %zr, %A, target`             |
+| `jump target`         | 8      | 0    | Pseudo-instruction: `jalz %zr, %bp, target`            |
+| `ret`                 | 8      | 0    | Pseudo-instruction: `jalz %zr, %rp, 0`                 |
+| `mret`                | 8      | 0    | Pseudo-instruction: `jalz %zr, %mp, 0` (millicode)     |
+| `jal %C, %A, offset`  | 8      | 1    | Jump and link                                          |
+| `rcall %A, offset`    | 8      | 1    | Pseudo-instruction: `jal %rp, %A, offset`              |
+| `rmcall %A, offset`   | 8      | 1    | Pseudo-instruction: `jal %mp, %A, offset`              |
+| `call target`         | 8      | 1    | Pseudo-instruction: `jal %rp, %bp, target`             |
+| `mcall target`        | 8      | 1    | Pseudo-instruction: `jal %mp, %bp, target` (millicode) |
 
 Compared to R16, we lose a bit of magic here because we can no longer use the
 ZR register as a destination register in `jal`. Technically, we could use,
