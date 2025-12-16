@@ -1,12 +1,14 @@
 package expect_test
 
 import (
-	"bytes"
 	"fmt"
 	"testing"
 
 	"github.com/jespert/primordial/internal/quality/expect"
+	"github.com/jespert/primordial/internal/quality/internal/tmock"
 )
+
+type T = tmock.T
 
 type result struct {
 	ok       bool
@@ -148,6 +150,39 @@ func TestEqual_string(t *testing.T) {
 	}
 }
 
+func TestSuccess(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		input error
+		result
+	}{
+		{
+			name:  "nil",
+			input: nil,
+			result: result{
+				ok:       true,
+				errorOut: "",
+				logOut:   "",
+			},
+		},
+		{
+			name:  "fail",
+			input: fmt.Errorf("test error"),
+			result: result{
+				ok:       false,
+				errorOut: "unexpected error: test error\n",
+				logOut:   "",
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			tMock := &T{}
+			ok := expect.Success(tMock, tc.input)
+			validate(t, tMock, tc.result.ok, ok, ok, tc.result)
+		})
+	}
+}
+
 func TestPanic_success(t *testing.T) {
 	tMock := &T{}
 	ok := expect.Panic(tMock, func() { panic("test panic") })
@@ -194,43 +229,6 @@ func validate(t *testing.T, tMock *T, want, got any, ok bool, result result) {
 		t.Errorf("Want:\n%v\n", tMock.LogOutput.String())
 		t.Errorf("Got:%v\n", result.logOut)
 	}
-}
-
-var _ expect.TestingT = &T{}
-
-type T struct {
-	Failed       bool
-	ErrorOutput  bytes.Buffer
-	LogOutput    bytes.Buffer
-	HelperCalled bool
-}
-
-func (t *T) Helper() {
-	t.HelperCalled = true
-}
-
-func (t *T) Error(args ...interface{}) {
-	for _, arg := range args {
-		_, _ = fmt.Fprintf(&t.ErrorOutput, "%v", arg)
-	}
-}
-
-func (t *T) Errorf(format string, args ...interface{}) {
-	t.Failed = true
-
-	// There's nothing we can do about IO errors here.
-	_, _ = fmt.Fprintf(&t.ErrorOutput, format, args...)
-}
-
-func (t *T) Log(args ...interface{}) {
-	for _, arg := range args {
-		_, _ = fmt.Fprintf(&t.LogOutput, "%v", arg)
-	}
-}
-
-func (t *T) Logf(format string, args ...interface{}) {
-	// There's nothing we can do about IO errors here.
-	_, _ = fmt.Fprintf(&t.LogOutput, format, args...)
 }
 
 const longStr1 = `Lorem ipsum dolor sit amet,
