@@ -1,4 +1,9 @@
-# SRX Computer
+# SRX Computer (test-and-branch)
+
+**Warning: this highly experimental and very much a work in progress.**
+
+This is the version of SRX with test-and-branch instructions (like RISC-V).
+This design is a work in progress and may be ultimately discarded.
 
 Specification and emulator for the SRX computer architecture.
 It supports 16, 32, 64 and 128-bit architectures.
