@@ -156,7 +156,7 @@ besmirches the symmetry of power-of-two immediate values.
 | `load.fd %F1, %A, imm32`  | imm32    | imm32    | F1       | A       | 21     | 3      |
 | `load.fq %F0, %A, imm32`  | imm32    | imm32    | F0       | A       | 22     | 3      |
 | `load.fq %F1, %A, imm32`  | imm32    | imm32    | F1       | A       | 23     | 3      |
-| `store.fh %FY, %A, imm32` | imm32    | F0       | imm32    | A       | 16     | 3      |
+| `store.fh %F0, %A, imm32` | imm32    | F0       | imm32    | A       | 16     | 3      |
 | `store.fh %F1, %A, imm32` | imm32    | F1       | imm32    | A       | 17     | 3      |
 | `store.fw %F0, %A, imm32` | imm32    | F0       | imm32    | A       | 18     | 3      |
 | `store.fw %F1, %A, imm32` | imm32    | F1       | imm32    | A       | 19     | 3      |
