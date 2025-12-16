@@ -131,11 +131,11 @@ Like R16, we still only have three instruction formats conceptually.
 The register bank (integer or pointer) will be determined by the operation
 (opcode and function).
 
-| Format | Mnemonic      | [28..31] | [24..27] | [20..23] | [16..19] | [12..15] | [8..11] | [4..7] | [0..3] |
-|--------|---------------|----------|----------|----------|----------|----------|---------|--------|--------|
-| A      | Assignment    | Opcode   | C/Z      | Func     | A/X      | imm16    | imm16   | imm16  | imm16  |
-| B      | Branch        | Opcode   | Func     | B/Y      | A/X      | imm16    | imm16   | imm16  | imm16  |
-| R      | Register      | Opcode   | C/Z      | B/Y      | A/X      | W        | Func    | Func   | Func   |
+| Format | Mnemonic   | [28..31] | [24..27] | [20..23] | [16..19] | [12..15] | [8..11] | [4..7] | [0..3] |
+|--------|------------|----------|----------|----------|----------|----------|---------|--------|--------|
+| A      | Assignment | Opcode   | C/Z      | Func4    | A/X      | imm16    | imm16   | imm16  | imm16  |
+| B      | Branch     | Opcode   | Func4    | B/Y      | A/X      | imm16    | imm16   | imm16  | imm16  |
+| R      | Register   | Opcode   | C/Z      | B/Y      | A/X      | W        | Func12  | Func12 | Func12 |
 
 Unlike most RISC architectures, we do not need additional formats to
 support calls, jumps, or branches because the A and B formats
