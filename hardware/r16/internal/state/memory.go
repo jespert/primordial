@@ -24,12 +24,30 @@ func (m *Memory) WriteB(address Address, value byte) error {
 }
 
 func (m *Memory) ReadH(address Address) (uint16, error) {
-	return uint16(m.data[address]) | uint16(m.data[address+1])<<8, nil
+	v := uint16(m.data[address])
+	v |= uint16(m.data[address+1]) << 8
+	return v, nil
 }
 
 func (m *Memory) WriteH(address Address, value uint16) error {
 	m.data[address] = byte(value)
 	m.data[address+1] = byte(value >> 8)
+	return nil
+}
+
+func (m *Memory) ReadW(address Address) (uint32, error) {
+	v := uint32(m.data[address])
+	v |= uint32(m.data[address+1]) << 8
+	v |= uint32(m.data[address+2]) << 16
+	v |= uint32(m.data[address+3]) << 24
+	return v, nil
+}
+
+func (m *Memory) WriteW(address Address, value uint32) error {
+	m.data[address] = byte(value)
+	m.data[address+1] = byte(value >> 8)
+	m.data[address+2] = byte(value >> 16)
+	m.data[address+3] = byte(value >> 24)
 	return nil
 }
 
