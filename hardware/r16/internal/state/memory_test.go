@@ -60,6 +60,32 @@ func TestMemory_H(t *testing.T) {
 	verifier.Verify()
 }
 
+func TestMemory_W(t *testing.T) {
+	var memory state.Memory
+	for i := 0; i < state.MemorySize; i += 4 {
+		address := state.Address(i)
+
+		// Memory is initially zero initialised.
+		original, err := memory.ReadW(address)
+		require.Success(t, err)
+		require.Equal(t, 0, original)
+
+		// We assign a new value to the memory.
+		written := uint32(i)
+		require.Success(t, memory.WriteW(address, written))
+
+		// And we read it back. It should be the one we wrote.
+		actual, err := memory.ReadW(address)
+		require.Success(t, err)
+		require.Equal(t, written, actual)
+	}
+
+	// Verify the final state of the memory.
+	verifier := approval.NewTextVerifier(t)
+	memory.Dump(verifier.Writer())
+	verifier.Verify()
+}
+
 func TestMemory_Dump_initial(t *testing.T) {
 	// Initially, the memory is empty.
 	var memory state.Memory
