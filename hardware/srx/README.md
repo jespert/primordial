@@ -73,7 +73,6 @@ Compared to RISC-V, it supports much further branches, jumps and calls.
 | WA     | Assignment | imm16    | imm16    | imm16    | imm16    | Z        | X       | Opcode | 2      |
 | WB     | Branch     | imm16    | imm16    | imm16    | Y        | imm16    | X       | Opcode | 2      |
 
-
 48-bit format:
 
 | Format | Mnemonic   | [20..47] | [16..19] | [12..15] | [8..11] | [2..7] | [0..1] |
