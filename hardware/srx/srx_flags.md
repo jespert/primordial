@@ -33,7 +33,7 @@ Compared to RISC-V, it supports much further branches, jumps and calls.
 | Format | Mnemonic   | [28..31] | [24..27] | [20..23] | [16..19] | [12..15] | [8..11] | [2..7] | [0..1] |
 |--------|------------|----------|----------|----------|----------|----------|---------|--------|--------|
 | R      | Register   | Func8    | Func8    | W        | Y        | Z        | X       | Opcode | 1      |
-| S      | Shift      | Func8    | Func8    | imm8     | imm8     | Z        | X       | Opcode | 1      |
+| S      | Short      | Func8    | Func8    | imm8     | imm8     | Z        | X       | Opcode | 1      |
 | A      | Assignment | imm16    | imm16    | imm16    | imm16    | Z        | X       | Opcode | 2      |
 | B      | Branch     | imm16    | imm16    | imm16    | Y        | imm16    | X       | Opcode | 2      |
 
