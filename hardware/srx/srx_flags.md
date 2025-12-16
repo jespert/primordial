@@ -20,29 +20,29 @@ Immediates can be 8, 16 or 32-bits-long.
 This consumes many opcodes but allows a very natural set of instructions.
 Compared to RISC-V, it supports much further branches, jumps and calls.
 
-16-bit format:
+16-bit format: (C for compact)
 
 | Format | Mnemonic  | [12..15] | [8..11] | [4..7] | [2..3] | [0..1] |
 |--------|-----------|----------|---------|--------|--------|--------|
-| HR     | Register  | Z        | X       | Func4  | Opcode | 0      |
-| HF     | Function  | ZX       | Func8   | Func8  | Opcode | 0      |
-| HI     | Immediate | ZX       | imm8    | imm8   | Opcode | 0      |
+| CR     | Register  | Z        | X       | Func4  | Opcode | 0      |
+| CF     | Function  | ZX       | Func8   | Func8  | Opcode | 0      |
+| CI     | Immediate | ZX       | imm8    | imm8   | Opcode | 0      |
 
 32-bit format:
 
 | Format | Mnemonic   | [28..31] | [24..27] | [20..23] | [16..19] | [12..15] | [8..11] | [2..7] | [0..1] |
 |--------|------------|----------|----------|----------|----------|----------|---------|--------|--------|
-| WR     | Register   | Func8    | Func8    | W        | Y        | Z        | X       | Opcode | 1      |
-| WS     | Shift      | Func8    | Func8    | imm8     | imm8     | Z        | X       | Opcode | 1      |
-| WA     | Assignment | imm16    | imm16    | imm16    | imm16    | Z        | X       | Opcode | 2      |
-| WB     | Branch     | imm16    | imm16    | imm16    | Y        | imm16    | X       | Opcode | 2      |
+| R      | Register   | Func8    | Func8    | W        | Y        | Z        | X       | Opcode | 1      |
+| S      | Shift      | Func8    | Func8    | imm8     | imm8     | Z        | X       | Opcode | 1      |
+| A      | Assignment | imm16    | imm16    | imm16    | imm16    | Z        | X       | Opcode | 2      |
+| B      | Branch     | imm16    | imm16    | imm16    | Y        | imm16    | X       | Opcode | 2      |
 
-48-bit format:
+48-bit format: (X for extended)
 
 | Format | Mnemonic   | [20..47] | [16..19] | [12..15] | [8..11] | [2..7] | [0..1] |
 |--------|------------|----------|----------|----------|---------|--------|--------|
-| DA     | Assignment | imm32    | imm32    | X        | Z       | Opcode | 3      |
-| DB     | Branch     | imm32    | Y        | X        | imm32   | Opcode | 3      |
+| XA     | Assignment | imm32    | imm32    | X        | Z       | Opcode | 3      |
+| XB     | Branch     | imm32    | Y        | X        | imm32   | Opcode | 3      |
 
 ## Branches
 
