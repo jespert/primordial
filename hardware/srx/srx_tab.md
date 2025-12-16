@@ -17,24 +17,25 @@ SRX has separate data and address registers and variable-length instructions
 
 Instructions can be 16, 32 or 48-bits long.
 
-Immediates can be 8, 16 or 32-bits-long.
+Immediates can be 4, 8, 16 or 32-bits-long.
 This consumes many opcodes but allows a very natural set of instructions.
 Compared to RISC-V, it supports much further branches, jumps and calls.
 
 16-bit format: (C for compact)
 
-| Format | Mnemonic  | [12..15] | [8..11] | [4..7] | [2..3] | [0..1] |
-|--------|-----------|----------|---------|--------|--------|--------|
-| CR     | Register  | Z        | X       | Func4  | Opcode | 0      |
-| CF     | Function  | ZX       | Func8   | Func8  | Opcode | 0      |
-| CI     | Immediate | ZX       | imm8    | imm8   | Opcode | 0      |
+| Format | Mnemonic            | [12..15] | [8..11] | [4..7]  | [2..3] | [0..1] |
+|--------|---------------------|----------|---------|---------|--------|--------|
+| C1     | One argument        | Func8    | Func8   | AC/XZ   | Opcode | 0      |
+| C2     | Two arguments       | Func4    | B/Y     | AC/XZ   | Opcode | 0      |
+| CE     | Eight-bit immediate | imm8     | imm8    | AC/XZ   | Opcode | 0      |
+| CF     | Four-bit immediate  | Func4    | imm4    | AC/XZ   | Opcode | 0      |
 
 32-bit format:
 
 | Format | Mnemonic   | [28..31] | [24..27] | [20..23] | [16..19] | [12..15] | [8..11] | [2..7] | [0..1] |
 |--------|------------|----------|----------|----------|----------|----------|---------|--------|--------|
 | R      | Register   | Func8    | Func8    | W        | Y        | Z        | X       | Opcode | 1      |
-| S      | Short      | Func8    | Func8    | imm8     | imm8     | Z        | X       | Opcode | 1      |
+| E      | Eight      | Func8    | Func8    | imm8     | imm8     | Z        | X       | Opcode | 1      |
 | A      | Assignment | imm16    | imm16    | imm16    | imm16    | Z        | X       | Opcode | 2      |
 | B      | Branch     | imm16    | imm16    | imm16    | Y        | imm16    | X       | Opcode | 2      |
 
@@ -42,8 +43,8 @@ Compared to RISC-V, it supports much further branches, jumps and calls.
 
 | Format | Mnemonic   | [20..47] | [16..19] | [12..15] | [8..11] | [2..7] | [0..1] |
 |--------|------------|----------|----------|----------|---------|--------|--------|
-| XA     | Assignment | imm32    | imm32    | X        | Z       | Opcode | 3      |
-| XB     | Branch     | imm32    | Y        | X        | imm32   | Opcode | 3      |
+| XA     | Assignment | imm32    | imm32    | C/Z      | A/X     | Opcode | 3      |
+| XB     | Branch     | imm32    | B/Y      | imm32    | A/X     | Opcode | 3      |
 
 The format A is the one most likely to suffer from linker reallocation,
 so we chose to keep its immediate contiguous to simplify the tooling.
@@ -92,3 +93,11 @@ which consumes exactly the 64 opcodes.
 
 Dropping Q would free 11 opcodes (load unsigned D, plus all the Q).
 Then it would consume 53 out of the 64 opcodes available.
+
+Another opportunity comes from realising that it doesn't make sense to
+have up to nine instructions that can load into the ZR register.
+We could keep one as a prefetch instruction and overlap the others with
+instructions that can benefit from the long immediate and a register.
+Calls, jumps, LUIs, AUIPCs, etc., might be made to fit this pattern.
+That could free up to seven opcodes.
+Then it would consume 56 out of the 64 opcodes available.
