@@ -346,8 +346,8 @@ for any operand size.
 | `add.a %C, %B, %X` | 0      | 208   | Add integer offset to pointer             |
 | `sub.a %C, %B, %X` | 0      | 209   | Subtract integer offset from pointer      |
 | `diff %Z, %B, %A`  | 0      | 210   | Difference between two pointers           |
-| `ptoi %Z, %A`      | 0      | 211   | Pointer to integer conversion             |
-| `itop %A, %X`      | 0      | 212   | Integer to pointer conversion             |
+| `ptoz %Z, %A`      | 0      | 211   | Pointer to integer conversion             |
+| `ztop %A, %X`      | 0      | 212   | Integer to pointer conversion             |
 
 ## Extensibility
 
