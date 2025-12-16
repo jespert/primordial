@@ -11,46 +11,6 @@ It supports 16, 32, 64 and 128-bit architectures.
 SRX has separate data and address registers and variable-length instructions
 (S = split register file, X = variable-length instructions).
 
-## Registers
-
-The convention for saved registers (S) grows downwards to mitigate the risk of
-off-by-one errors between the alias and the register number.
-
-| Type | Register | Alias | Purpose                                          |
-|------|----------|-------|--------------------------------------------------|
-| D    | 0        | ZR    | Zero (hardcoded)                                 |
-| D    | 1        |       | Argument register 4                              |
-| D    | 2        |       | Argument register 3                              |
-| D    | 3        |       | Argument register 2                              |
-| D    | 4        |       | Argument register 1                              |
-| D    | 5        |       | Argument register 0                              |
-| D    | 6        |       | Temporary register 1                             |
-| D    | 7        |       | Temporary register 0                             |
-| D    | 8        |       | Saved register 0                                 |
-| D    | 9        |       | Saved register 1                                 |
-| D    | a        |       | Saved register 2                                 |
-| D    | b        |       | Saved register 3                                 |
-| D    | c        |       | Saved register 4                                 |
-| D    | d        |       | Saved register 5                                 |
-| D    | e        |       | Saved register 6                                 |
-| D    | f        |       | Saved register 7                                 |
-| A    | 0        | SP    | Stack pointer                                    |
-| A    | 1        | BP    | Base pointer                                     |
-| A    | 2        | TP    | Thread pointer                                   |
-| A    | 3        |       | Argument register 2                              |
-| A    | 4        |       | Argument register 1                              |
-| A    | 5        |       | Argument register 0                              |
-| A    | 6        |       | Temporary register 1                             |
-| A    | 7        |       | Temporary register 0, alternative return pointer |
-| A    | 8        | FP    | Saved register 0, Frame pointer                  |
-| A    | 9        |       | Saved register 1                                 |
-| A    | a        |       | Saved register 2                                 |
-| A    | b        |       | Saved register 3                                 |
-| A    | c        |       | Saved register 4                                 |
-| A    | d        |       | Saved register 5                                 |
-| A    | e        |       | Saved register 6                                 |
-| A    | f        | RP    | Return pointer                                   |
-
 ## Instruction encoding
 
 ### Formats
@@ -129,3 +89,6 @@ These are:
 | `lui.lq1`                     | Q (offset 96)                  | 1     |
 
 which consumes exactly the 64 opcodes.
+
+Dropping Q would free 11 opcodes (load unsigned D, plus all the Q).
+Then it would consume 53 out of the 64 opcodes available.
