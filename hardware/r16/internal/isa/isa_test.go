@@ -75,4 +75,14 @@ var encodingTestCases = []struct {
 		},
 		encoded: 0x8a3c6789,
 	},
+	{
+		name: "jal",
+		decoded: isa.DecodedInstruction{
+			Operation: isa.JAL,
+			Z:         isa.RP,
+			X:         isa.A2,
+			Imm:       0x1234,
+		},
+		encoded: 0x8e1c1234,
+	},
 }

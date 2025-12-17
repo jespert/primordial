@@ -23,32 +23,36 @@ func (m *Memory) WriteB(address Address, value byte) error {
 	return nil
 }
 
-func (m *Memory) ReadH(address Address) (uint16, error) {
-	v := uint16(m.data[address])
-	v |= uint16(m.data[address+1]) << 8
+func (m *Memory) ReadH(address Address) (int16, error) {
+	v := int16(m.data[address])
+	v |= int16(m.data[address+1]) << 8
 	return v, nil
 }
 
-func (m *Memory) WriteH(address Address, value uint16) error {
+func (m *Memory) WriteH(address Address, value int16) error {
 	m.data[address] = byte(value)
 	m.data[address+1] = byte(value >> 8)
 	return nil
 }
 
-func (m *Memory) ReadW(address Address) (uint32, error) {
-	v := uint32(m.data[address])
-	v |= uint32(m.data[address+1]) << 8
-	v |= uint32(m.data[address+2]) << 16
-	v |= uint32(m.data[address+3]) << 24
+func (m *Memory) ReadW(address Address) (int32, error) {
+	v := int32(m.data[address])
+	v |= int32(m.data[address+1]) << 8
+	v |= int32(m.data[address+2]) << 16
+	v |= int32(m.data[address+3]) << 24
 	return v, nil
 }
 
-func (m *Memory) WriteW(address Address, value uint32) error {
+func (m *Memory) WriteW(address Address, value int32) error {
 	m.data[address] = byte(value)
 	m.data[address+1] = byte(value >> 8)
 	m.data[address+2] = byte(value >> 16)
 	m.data[address+3] = byte(value >> 24)
 	return nil
+}
+
+func (m *Memory) WriteRaw(address Address, data []byte) {
+	copy(m.data[address:], data)
 }
 
 func (m *Memory) Dump(w io.Writer) {

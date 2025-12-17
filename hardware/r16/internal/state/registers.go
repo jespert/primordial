@@ -8,14 +8,15 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/jespert/primordial/hardware/r16/internal/isa"
 	"github.com/jespert/primordial/internal/quality/assert"
 )
 
 type Registers struct {
-	values [NumRegisters - 1]int16
+	values [NumRegisters - 1]uint16
 }
 
-func (r *Registers) Read(register int) int16 {
+func (r *Registers) Read(register isa.Register) uint16 {
 	r.assertValidRegister(register)
 
 	if register == 0 {
@@ -25,7 +26,7 @@ func (r *Registers) Read(register int) int16 {
 	return r.values[register-1]
 }
 
-func (r *Registers) Write(register int, value int16) {
+func (r *Registers) Write(register isa.Register, value uint16) {
 	r.assertValidRegister(register)
 
 	if register != 0 {
@@ -33,8 +34,8 @@ func (r *Registers) Write(register int, value int16) {
 	}
 }
 
-func (r *Registers) assertValidRegister(register int) {
-	inBounds := register >= 0 && register < NumRegisters
+func (r *Registers) assertValidRegister(register isa.Register) {
+	inBounds := register < NumRegisters
 	assert.Truef(inBounds, "register %d is out of bounds", register)
 }
 
@@ -42,7 +43,7 @@ func (r *Registers) DumpNonZero(w io.Writer) {
 	// There is nothing we can do on IO failure, so we just ignore errors.
 	allZero := true
 	for i := range NumRegisters {
-		v := r.Read(i)
+		v := r.Read(isa.Register(i))
 		if v == 0 {
 			continue
 		}
@@ -51,10 +52,10 @@ func (r *Registers) DumpNonZero(w io.Writer) {
 		_, _ = fmt.Fprintf(
 			w,
 			"%1X: 0x%04x S:%d U:%d\n",
-			i,
+			uint16(i),
 			v,
+			int16(v),
 			v,
-			uint16(v),
 		)
 	}
 

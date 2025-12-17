@@ -1,0 +1,10 @@
+IP: 0xabcd
+
+Non-zero registers:
+A: 0x9999 S:-26215 U:39321
+E: 0x8002 S:-32766 U:32770
+
+Memory:
+(2048 empty lines)
+8000  34 12 1a 8e 00 00 00 00  00 00 00 00 00 00 00 00  |4...............|
+(2047 empty lines)

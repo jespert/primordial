@@ -1,4 +1,4 @@
-IP: 0
+IP: 0x8000
 
 Non-zero registers:
 (none)

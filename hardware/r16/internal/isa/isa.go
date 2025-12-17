@@ -1,29 +1,35 @@
 // Package isa implements the R16 instruction set.
 package isa
 
+import "github.com/jespert/primordial/internal/quality/assert"
+
 // Register is a register number.
 type Register uint8
+
+const (
+	ZR Register = 0
+	S6 Register = 1
+	S5 Register = 2
+	S4 Register = 3
+	S3 Register = 4
+	S2 Register = 5
+	S1 Register = 6
+	S0 Register = 7
+	T0 Register = 8
+	T1 Register = 9
+	A0 Register = 10
+	A1 Register = 11
+	A2 Register = 12
+	A3 Register = 13
+	RP Register = 14
+	SP Register = 15
+)
 
 // Operation code (opcode + function).
 type Operation uint16
 
 const (
-	ZR Register = 0
-	S6          = 1
-	S5          = 2
-	S4          = 3
-	S3          = 4
-	S2          = 5
-	S1          = 6
-	S0          = 7
-	T0          = 8
-	T1          = 9
-	A0          = 10
-	A1          = 12
-	A2          = 13
-	A3          = 14
-	RP          = 15
-	SP          = 16
+	JAL Operation = 0x8001
 )
 
 type DecodedInstruction struct {
@@ -110,14 +116,19 @@ func Encode(d DecodedInstruction) EncodedInstruction {
 	switch fmt := d.Operation >> 14; fmt {
 	case 0:
 		// R-type
+		assert.Equal(0, imm) // TODO replace with Zero.
 		function = EncodedInstruction(d.Operation & 0xfff)
 
 	case 1:
 		// B-type
+		assert.Equal(0, z)                  // TODO replace with Zero.
+		assert.Equal(0, d.Operation&0x0ff0) // TODO replace with Zero.
 		function = EncodedInstruction(d.Operation&0xf) << offsetZ
 
 	default:
 		// A-type
+		assert.Equal(0, y)                  // TODO replace with Zero.
+		assert.Equal(0, d.Operation&0x0ff0) // TODO replace with Zero.
 		function = EncodedInstruction(d.Operation&0xf) << offsetY
 	}
 
