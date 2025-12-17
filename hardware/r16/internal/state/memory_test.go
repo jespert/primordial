@@ -45,7 +45,7 @@ func TestMemory_H(t *testing.T) {
 		require.Equal(t, 0, original)
 
 		// We assign a new value to the memory.
-		written := uint16(i)
+		written := int16(i)
 		require.Success(t, memory.WriteH(address, written))
 
 		// And we read it back. It should be the one we wrote.
@@ -71,7 +71,7 @@ func TestMemory_W(t *testing.T) {
 		require.Equal(t, 0, original)
 
 		// We assign a new value to the memory.
-		written := uint32(i)
+		written := int32(i)
 		require.Success(t, memory.WriteW(address, written))
 
 		// And we read it back. It should be the one we wrote.
